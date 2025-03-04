@@ -2,6 +2,7 @@
   <a-drawer
     :title="task ? 'Редактировать задачу' : 'Добавить задачу'"
     :visible="visible"
+    :afterVisibleChange="afterVisibleChange"
     @close="$emit('close')"
     width="400"
   >
@@ -33,17 +34,9 @@ export default {
       type: Object,
       default: () => {},
     },
-  },
-  watch: {
-    task: {
-      immediate: true,
-      handler(newTask) {
-        if (newTask) {
-          this.form = { ...newTask };
-        } else {
-          this.form = { title: "", description: "", is_completed: false };
-        }
-      },
+    isEdit: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -66,7 +59,7 @@ export default {
         if (valid) {
           try {
             debugger;
-            if (this.task) {
+            if (this.isEdit && this.task) {
               const updatedTask = await this.$store.dispatch("updateTask", {
                 id: this.task.id,
                 ...this.form,
@@ -82,6 +75,15 @@ export default {
           }
         }
       });
+    },
+    afterVisibleChange(vis) {
+      if (vis) {
+        if (this.isEdit && this.task) this.form = { ...this.task };
+      } else {
+        this.form.title = "";
+        this.form.description = "";
+        this.form.is_completed = false;
+      }
     },
   },
 };

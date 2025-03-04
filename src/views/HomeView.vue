@@ -2,7 +2,7 @@
   <div>
     <h1>Список задач</h1>
     <div class="task-controls">
-      <a-button type="primary" icon="plus" @click="openDrawer(null)"
+      <a-button type="primary" icon="plus" @click="openDrawer(null, false)"
         >Добавить</a-button
       >
       <a-select
@@ -36,7 +36,9 @@
           <a-button type="link" @click="showTaskDetails(task)"
             >Подробнее</a-button
           >
-          <a-button type="link" @click="openDrawer(task)">Изменить</a-button>
+          <a-button type="link" @click="openDrawer(task, true)"
+            >Изменить</a-button
+          >
           <a-popconfirm
             title="Вы уверены, что хотите удалить эту задачу?"
             ok-text="Да"
@@ -51,6 +53,7 @@
     <TaskDrawer
       :visible.sync="drawerVisible"
       :task="selectedTask"
+      :isEdit="isEdit"
       @close="closeDrawer"
       @taskUpdated="updateTask"
     />
@@ -88,6 +91,7 @@ export default {
   },
   data() {
     return {
+      isEdit: false,
       drawerVisible: false,
       taskModalVisible: false,
       selectedTask: null,
@@ -113,11 +117,13 @@ export default {
         sortOrder: this.sortOrder,
       });
     },
-    openDrawer(task) {
+    openDrawer(task, isEdit) {
       if (task) this.selectedTask = task;
+      this.isEdit = isEdit;
       this.drawerVisible = true;
     },
     closeDrawer() {
+      this.isEdit = false;
       this.drawerVisible = false;
     },
     updateTask(updatedTask) {
