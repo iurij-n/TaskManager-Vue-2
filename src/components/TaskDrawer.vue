@@ -58,7 +58,6 @@ export default {
       this.$refs.taskForm.validate(async (valid) => {
         if (valid) {
           try {
-            debugger;
             if (this.isEdit && this.task) {
               const updatedTask = await this.$store.dispatch("updateTask", {
                 id: this.task.id,
