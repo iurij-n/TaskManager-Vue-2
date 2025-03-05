@@ -2,7 +2,11 @@
   <div>
     <h1>Список задач</h1>
     <div class="task-controls">
-      <a-button type="primary" icon="plus" @click="openDrawer(null, false)"
+      <a-button
+        type="primary"
+        icon="plus"
+        @click="openDrawer(null, false)"
+        :disabled="loading"
         >Добавить</a-button
       >
       <a-select
@@ -23,33 +27,35 @@
         >Показывать выполненные</a-checkbox
       >
     </div>
-    <ul class="task-list">
-      <li v-for="task in tasks" :key="task.id" class="task-item">
-        <span class="task-title" :title="task.title">{{ task.title }}</span>
-        <div class="task-actions">
-          <a-button v-if="task.is_completed" class="completed" type="link"
-            >Выполнено</a-button
-          >
-          <a-button v-else class="not_completed" type="link"
-            >Не выполнено</a-button
-          >
-          <a-button type="link" @click="showTaskDetails(task)"
-            >Подробнее</a-button
-          >
-          <a-button type="link" @click="openDrawer(task, true)"
-            >Изменить</a-button
-          >
-          <a-popconfirm
-            title="Вы уверены, что хотите удалить эту задачу?"
-            ok-text="Да"
-            cancel-text="Нет"
-            @confirm="deleteTask(task)"
-          >
-            <a-button type="link" danger>Удалить</a-button>
-          </a-popconfirm>
-        </div>
-      </li>
-    </ul>
+    <a-spin :spinning="loading">
+      <ul class="task-list">
+        <li v-for="task in tasks" :key="task.id" class="task-item">
+          <span class="task-title" :title="task.title">{{ task.title }}</span>
+          <div class="task-actions">
+            <a-button v-if="task.is_completed" class="completed" type="link"
+              >Выполнено</a-button
+            >
+            <a-button v-else class="not_completed" type="link"
+              >Не выполнено</a-button
+            >
+            <a-button type="link" @click="showTaskDetails(task)"
+              >Подробнее</a-button
+            >
+            <a-button type="link" @click="openDrawer(task, true)"
+              >Изменить</a-button
+            >
+            <a-popconfirm
+              title="Вы уверены, что хотите удалить эту задачу?"
+              ok-text="Да"
+              cancel-text="Нет"
+              @confirm="deleteTask(task)"
+            >
+              <a-button type="link" danger>Удалить</a-button>
+            </a-popconfirm>
+          </div>
+        </li>
+      </ul>
+    </a-spin>
     <TaskDrawer
       :visible.sync="drawerVisible"
       :task="selectedTask"
@@ -97,6 +103,7 @@ export default {
       selectedTask: null,
       showCompleted: false,
       sortOrder: "-created_at",
+      loading: false,
     };
   },
   created() {
@@ -112,10 +119,18 @@ export default {
       this.fetchTasks();
     },
     async fetchTasks() {
-      await this.$store.dispatch("fetchTasks", {
-        showCompleted: localStorage.getItem("showCompleted") === "true",
-        sortOrder: this.sortOrder,
-      });
+      this.loading = true;
+      try {
+        await this.$store.dispatch("fetchTasks", {
+          showCompleted: localStorage.getItem("showCompleted") === "true",
+          sortOrder: this.sortOrder,
+        });
+      } catch (error) {
+        console.log("Ошибка получения списка задач:", error);
+        this.$message.error("Ошибка получения списка задач");
+      } finally {
+        this.loading = false;
+      }
     },
     openDrawer(task, isEdit) {
       if (task) this.selectedTask = task;
@@ -130,8 +145,16 @@ export default {
       this.$store.commit("updateTask", updatedTask);
     },
     async deleteTask(task) {
-      await this.$store.dispatch("deleteTask", task.id);
-      this.$message.success(`Задача "${task.title}" удалена`);
+      this.loading = true;
+      try {
+        await this.$store.dispatch("deleteTask", task.id);
+        this.$message.success(`Задача "${task.title}" удалена`);
+      } catch (error) {
+        console.log("Ошибка удаления задачи:", error);
+        this.$message.error("Ошибка удаления задачи");
+      } finally {
+        this.loading = false;
+      }
     },
     showTaskDetails(task) {
       this.selectedTask = task;
