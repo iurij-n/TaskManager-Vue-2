@@ -1,9 +1,9 @@
 <template>
-  <a-layout>
+  <a-layout class="layout">
     <a-layout-header>
       <NavBar />
     </a-layout-header>
-    <a-layout-content style="padding: 24px; min-height: calc(100vh - 64px)">
+    <a-layout-content class="content">
       <router-view />
     </a-layout-content>
   </a-layout>
@@ -26,5 +26,17 @@ export default {
 <style>
 .ant-layout-header {
   background: #1890ff;
+}
+.content {
+  padding: 24px;
+  min-height: calc(100vh - 64px);
+  overflow-y: hidden;
+  background-color: #fff;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
 }
 </style>

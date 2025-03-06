@@ -21,11 +21,15 @@ export default new Vuex.Store({
     },
     logout(state) {
       state.isAuthenticated = false;
+      state.tasks = [];
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
     },
     setTasks(state, tasks) {
       state.tasks = tasks;
+    },
+    addTasks(state, tasks) {
+      state.tasks.push(...tasks);
     },
     addTask(state, task) {
       state.tasks.unshift(task);
@@ -61,12 +65,6 @@ export default new Vuex.Store({
       commit("logout");
       router.push("/login");
     },
-    async fetchTasks({ commit }, { showCompleted, sortOrder }) {
-      const response = await axios.get("tasks/", {
-        params: { show_completed: showCompleted, sort_order: sortOrder },
-      });
-      commit("setTasks", response.data);
-    },
     async createTask({ commit }, taskData) {
       const response = await axios.post("tasks/", taskData);
       commit("addTask", response.data);
@@ -74,6 +72,16 @@ export default new Vuex.Store({
     async updateTask({ commit }, taskData) {
       const response = await axios.put(`tasks/${taskData.id}/`, taskData);
       commit("updateTask", response.data);
+      return response.data;
+    },
+    async setCompleted({ commit }, { taskID, is_completed }) {
+      const response = await axios.patch(`tasks/${taskID}/`, {
+        is_completed: is_completed,
+      });
+      commit("updateTask", response.data);
+      if (is_completed && localStorage.getItem("showCompleted") !== "true") {
+        commit("removeTask", response.data.id);
+      }
       return response.data;
     },
     async deleteTask({ commit }, taskId) {

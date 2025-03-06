@@ -14,9 +14,6 @@
         <a-textarea v-model="form.description" />
       </a-form-model-item>
       <a-form-model-item>
-        <a-checkbox v-model="form.is_completed">Выполнено</a-checkbox>
-      </a-form-model-item>
-      <a-form-model-item>
         <a-button type="primary" @click="submitTask">Сохранить</a-button>
       </a-form-model-item>
     </a-form-model>
@@ -44,12 +41,6 @@ export default {
       form: { title: "", description: "", is_completed: false },
       rules: {
         title: [{ required: true, message: "Пожалуйста, введите заголовок" }],
-        description: [
-          {
-            required: true,
-            message: "Пожалуйста, введите описание",
-          },
-        ],
       },
     };
   },
