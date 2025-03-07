@@ -9,36 +9,36 @@
       class="register-form"
     >
       <h2>Регистрация</h2>
-      <a-form-item label="Имя пользователя" prop="username">
+      <a-form-model-item label="Имя пользователя" prop="username">
         <a-input
           size="large"
           v-model="form.username"
           placeholder="Введите имя пользователя"
         />
-      </a-form-item>
-      <a-form-item label="Email" prop="email">
+      </a-form-model-item>
+      <a-form-model-item label="Email" prop="email">
         <a-input
           v-model="form.email"
           type="email"
           placeholder="Введите email"
           size="large"
         />
-      </a-form-item>
-      <a-form-item label="Пароль" prop="password">
+      </a-form-model-item>
+      <a-form-model-item label="Пароль" prop="password">
         <a-input-password
           v-model="form.password"
           placeholder="Введите пароль"
           size="large"
         />
-      </a-form-item>
-      <a-form-item label="Подтвердите пароль" prop="confirmPassword">
+      </a-form-model-item>
+      <a-form-model-item label="Подтвердите пароль" prop="confirmPassword">
         <a-input-password
           v-model="form.confirmPassword"
           placeholder="Повторите пароль"
           size="large"
         />
-      </a-form-item>
-      <a-form-item>
+      </a-form-model-item>
+      <a-form-model-item>
         <a-button
           type="primary"
           html-type="submit"
@@ -47,7 +47,7 @@
           :loading="loading"
           >Зарегистрироваться</a-button
         >
-      </a-form-item>
+      </a-form-model-item>
     </a-form-model>
   </div>
 </template>
@@ -96,7 +96,7 @@ export default {
             this.$router.push("/login");
           } catch (error) {
             console.log("Ошибка регистрации:", error);
-            this.$message.error("Ошибка регистрации");
+            this.$handleErrors(error);
           } finally {
             this.loading = false;
           }

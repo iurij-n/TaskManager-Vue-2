@@ -62,6 +62,7 @@ export default {
           } catch (error) {
             console.error("Ошибка при создании задачи:", error);
             this.$message.error("Ошибка при создании задачи");
+            this.$handleErrors(error);
           }
         }
       });

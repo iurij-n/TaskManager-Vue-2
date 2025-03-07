@@ -8,7 +8,7 @@
       class="login-form"
     >
       <h2>Вход</h2>
-      <a-form-item label="Имя пользователя" prop="username">
+      <a-form-model-item label="Имя пользователя" prop="username">
         <a-input
           v-model="form.username"
           placeholder="Имя пользователя"
@@ -16,8 +16,8 @@
         >
           <a-icon slot="prefix" type="user" />
         </a-input>
-      </a-form-item>
-      <a-form-item label="Пароль" prop="password">
+      </a-form-model-item>
+      <a-form-model-item label="Пароль" prop="password">
         <a-input-password
           v-model="form.password"
           placeholder="Пароль"
@@ -25,8 +25,8 @@
         >
           <a-icon slot="prefix" type="lock" />
         </a-input-password>
-      </a-form-item>
-      <a-form-item>
+      </a-form-model-item>
+      <a-form-model-item>
         <a-button
           type="primary"
           html-type="submit"
@@ -36,11 +36,11 @@
         >
           Войти
         </a-button>
-      </a-form-item>
-      <a-form-item>
+      </a-form-model-item>
+      <a-form-model-item>
         <span>Нет аккаунта? </span>
         <router-link to="/register"> Зарегистрироваться </router-link>
-      </a-form-item>
+      </a-form-model-item>
     </a-form-model>
   </div>
 </template>
@@ -72,7 +72,7 @@ export default {
             this.$router.push("/");
           } catch (error) {
             console.log("Ошибка входа:", error);
-            this.$message.error("Ошибка входа");
+            this.$handleErrors(error);
           } finally {
             this.loading = false;
           }

@@ -145,6 +145,7 @@ export default {
           this.checkEmpty();
         } catch (e) {
           console.log(e);
+          this.$handleErrors(e);
         } finally {
           this.loading = false;
         }
