@@ -1,17 +1,20 @@
 <template>
-  <div class="task-card">
-    <div class="check-complete">
-      <a-tooltip :mouseEnterDelay="0.5">
-        <template slot="title"> Выполнено </template>
-        <a-checkbox :checked="task.is_completed" @change="setComplete" />
-      </a-tooltip>
+  <div class="task-card-wrapper">
+    <div class="task-card">
+      <div class="check-complete">
+        <a-tooltip :mouseEnterDelay="0.5">
+          <template slot="title"> Выполнено </template>
+          <a-checkbox :checked="task.is_completed" @change="setComplete" />
+        </a-tooltip>
+      </div>
+      <div class="info">
+        <div class="title">{{ task.title }}</div>
+        <div class="description">{{ task.description }}</div>
+      </div>
+      <a-button icon="edit" @click="edit" />
+      <a-button ghost type="danger" icon="delete" @click="deleteTask" />
     </div>
-    <div class="info">
-      <div class="title">{{ task.title }}</div>
-      <div class="description">{{ task.description }}</div>
-    </div>
-    <a-button icon="edit" @click="edit" />
-    <a-button ghost type="danger" icon="delete" @click="deleteTask" />
+    <div class="gap-block"></div>
   </div>
 </template>
 <script>
@@ -37,6 +40,11 @@ export default {
 };
 </script>
 <style scoped>
+.task-card-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 75px 15px;
+}
 .task-card {
   min-height: 0;
   border: 1px solid #d9d9d9;

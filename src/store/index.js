@@ -71,6 +71,7 @@ export default new Vuex.Store({
     async createTask({ commit }, taskData) {
       const response = await axios.post("tasks/", taskData);
       commit("addTask", response.data);
+      return response;
     },
     async updateTask({ commit }, taskData) {
       const response = await axios.put(`tasks/${taskData.id}/`, taskData);
@@ -87,9 +88,8 @@ export default new Vuex.Store({
       }
       return response.data;
     },
-    async deleteTask({ commit }, taskId) {
+    async deleteTask(_, taskId) {
       await axios.delete(`tasks/${taskId}/`);
-      commit("removeTask", taskId);
     },
   },
 });

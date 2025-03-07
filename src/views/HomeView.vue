@@ -34,8 +34,12 @@
         v-for="task in tasks"
         :key="task.id"
         :task="task"
-        :removing="task.id === removingTaskID"
-        :adding="task.id === addingTaskID"
+        :class="[
+          task.id === addedTaskID && 'add-task-anim',
+          task.id === deletedTaskID && 'delete-task-anim',
+        ]"
+        :removing="task.id === deletedTaskID"
+        :adding="task.id === addedTaskID"
         @setComplete="setComplete"
         @edit="edit"
         @deleteTask="deleteTaskConfirm"
@@ -100,19 +104,21 @@ export default {
   },
   data() {
     return {
-      isEdit: false,
-      form: { title: "", description: "", is_completed: false },
+      addedTaskID: null,
+      deletedTaskID: null,
       drawerVisible: false,
-      taskModalVisible: false,
+      form: { title: "", description: "", is_completed: false },
+      isEdit: false,
+      loading: false,
+      next: true,
+      page: 1,
+      page_size: 8,
+      reload: false,
       selectedTask: null,
       showCompleted: false,
-      sortOrder: "-created_at",
-      loading: false,
-      reload: false,
-      page_size: 8,
-      page: 1,
-      next: true,
       showEmpty: false,
+      sortOrder: "-created_at",
+      taskModalVisible: false,
     };
   },
   methods: {
@@ -167,16 +173,23 @@ export default {
       }
     },
     async addTask() {
+      this.loading = false;
       this.form.title = this.form.title.trim();
       if (!this.form.title.length) return;
       try {
-        await this.$store.dispatch("createTask", this.form);
+        const { data } = await this.$store.dispatch("createTask", this.form);
+        this.addedTaskID = data.id;
         this.clearForm();
         this.checkEmpty();
         this.$message.success("Задача добавлена!");
       } catch (error) {
         console.error("Ошибка при создании задачи:", error);
         this.$message.error("Ошибка при создании задачи");
+      } finally {
+        this.loading = false;
+        setTimeout(() => {
+          this.addedTaskID = null;
+        }, 400);
       }
     },
     clearForm() {
@@ -230,13 +243,20 @@ export default {
       this.loading = true;
       try {
         await this.$store.dispatch("deleteTask", task.id);
-        this.checkEmpty();
-        this.$message.success(`Задача "${task.title}" удалена`);
+        this.deletedTaskID = task.id;
+        setTimeout(() => {
+          this.$store.commit("removeTask", task.id);
+          this.checkEmpty();
+          this.$message.success(`Задача "${task.title}" удалена`);
+        }, 400);
       } catch (error) {
         console.log("Ошибка удаления задачи:", error);
         this.$message.error("Ошибка удаления задачи");
       } finally {
         this.loading = false;
+        setTimeout(() => {
+          this.deletedTaskID = null;
+        }, 400);
       }
     },
     showTaskDetails(task) {
@@ -278,9 +298,8 @@ export default {
     padding: 0;
     height: 100%;
     min-height: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
   }
 }
 .task-controls {
@@ -315,5 +334,39 @@ export default {
   font-size: 1.1rem;
   font-weight: 600;
   opacity: 0.8;
+}
+</style>
+<style>
+@keyframes add-task-animation {
+  from {
+    opacity: 0;
+    height: 0;
+    width: 0;
+  }
+  to {
+    opacity: 1;
+    width: 100%;
+    height: 90px;
+  }
+}
+@keyframes delete-task-animation {
+  from {
+    opacity: 1;
+    height: 90px;
+  }
+  to {
+    opacity: 0;
+    height: 0;
+  }
+}
+.add-task-anim {
+  animation-name: add-task-animation;
+  animation-duration: 0.4s;
+  animation-timing-function: ease;
+}
+.delete-task-anim {
+  animation-name: delete-task-animation;
+  animation-duration: 0.4s;
+  animation-timing-function: ease;
 }
 </style>
