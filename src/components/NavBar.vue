@@ -2,6 +2,9 @@
   <nav class="navbar">
     <router-link to="/" class="nav-link">Главная</router-link>
     <div class="nav-right">
+      <div v-if="user" class="user">
+        {{ `Привет, ${user.username}!` }}
+      </div>
       <router-link v-if="!isAuthenticated" to="/login" class="nav-link"
         >Вход</router-link
       >
@@ -20,6 +23,9 @@ export default {
   computed: {
     isAuthenticated() {
       return this.$store.state.isAuthenticated;
+    },
+    user() {
+      return this.$store.state.user;
     },
   },
   methods: {
@@ -48,5 +54,10 @@ export default {
 }
 .nav-right {
   display: flex;
+}
+.user {
+  color: white;
+  margin-right: 40px;
+  font-weight: bold;
 }
 </style>

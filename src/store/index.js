@@ -9,8 +9,12 @@ export default new Vuex.Store({
   state: {
     isAuthenticated: !!localStorage.getItem("access"),
     tasks: [],
+    user: null,
   },
   mutations: {
+    setUser(state, user) {
+      state.user = user;
+    },
     setAuthData(state, { access, refresh }) {
       state.isAuthenticated = true;
       localStorage.setItem("access", access);
@@ -22,6 +26,7 @@ export default new Vuex.Store({
     logout(state) {
       state.isAuthenticated = false;
       state.tasks = [];
+      state.user = null;
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
     },
@@ -90,6 +95,10 @@ export default new Vuex.Store({
     },
     async deleteTask(_, taskId) {
       await axios.delete(`tasks/${taskId}/`);
+    },
+    async getUser({ commit }) {
+      const response = await axios.get(`users/user/`);
+      commit("setUser", response.data);
     },
   },
 });

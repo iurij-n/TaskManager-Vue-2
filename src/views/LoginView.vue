@@ -69,6 +69,7 @@ export default {
           this.loading = true;
           try {
             await this.$store.dispatch("login", this.form);
+            await this.$store.dispatch("getUser");
             this.$router.push("/");
           } catch (error) {
             console.log("Ошибка входа:", error);
