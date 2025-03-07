@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="home-view-wrapper">
     <div class="title">Список задач</div>
     <div class="add-task">
       <div class="title-input">
@@ -29,22 +29,25 @@
         >Показывать выполненные</a-checkbox
       >
     </div>
-    <div class="task-list">
+    <div class="task-list-wrap">
       <TaskItem
         v-for="task in tasks"
         :key="task.id"
         :task="task"
+        :removing="task.id === removingTaskID"
+        :adding="task.id === addingTaskID"
         @setComplete="setComplete"
         @edit="edit"
         @deleteTask="deleteTaskConfirm"
       />
       <infinite-loading
         ref="tasksInfinite"
+        key="tasksInfiniteKey"
         @infinite="getList"
-        v-bind:distance="5"
+        :distance="20"
       >
         <div slot="spinner"><a-spin /></div>
-        <div slot="no-more"></div>
+        <div slot="no-more" class="end-list">Это все задачи</div>
         <div slot="no-results"></div>
       </infinite-loading>
       <div v-if="showEmpty" style="padding-top: 5rem">
@@ -245,7 +248,7 @@ export default {
 </script>
 
 <style scoped>
-.wrapper {
+.home-view-wrapper {
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -269,6 +272,16 @@ export default {
       width: 100%;
     }
   }
+  .task-list-wrap {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 .task-controls {
   display: flex;
@@ -277,10 +290,7 @@ export default {
 
   margin-bottom: 20px;
 }
-.task-list {
-  padding: 0;
-  overflow-y: auto;
-}
+
 .task-actions {
   display: flex;
   gap: 10px;
@@ -299,5 +309,11 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.end-list {
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.8;
 }
 </style>

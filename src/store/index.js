@@ -41,7 +41,10 @@ export default new Vuex.Store({
       }
     },
     removeTask(state, taskId) {
-      state.tasks = state.tasks.filter((task) => task.id !== taskId);
+      const index = state.tasks.findIndex((task) => task.id === taskId);
+      if (index !== -1) {
+        state.tasks.splice(index, 1);
+      }
     },
   },
   actions: {

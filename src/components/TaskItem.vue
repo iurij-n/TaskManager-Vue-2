@@ -1,19 +1,17 @@
 <template>
-  <div style="min-height: 0">
-    <div class="wrapper">
-      <div class="check-complete">
-        <a-tooltip :mouseEnterDelay="0.5">
-          <template slot="title"> Выполнено </template>
-          <a-checkbox :checked="task.is_completed" @change="setComplete" />
-        </a-tooltip>
-      </div>
-      <div class="info">
-        <div class="title">{{ task.title }}</div>
-        <div class="description">{{ task.description }}</div>
-      </div>
-      <a-button icon="edit" @click="edit" />
-      <a-button ghost type="danger" icon="delete" @click="deleteTask" />
+  <div class="task-card">
+    <div class="check-complete">
+      <a-tooltip :mouseEnterDelay="0.5">
+        <template slot="title"> Выполнено </template>
+        <a-checkbox :checked="task.is_completed" @change="setComplete" />
+      </a-tooltip>
     </div>
+    <div class="info">
+      <div class="title">{{ task.title }}</div>
+      <div class="description">{{ task.description }}</div>
+    </div>
+    <a-button icon="edit" @click="edit" />
+    <a-button ghost type="danger" icon="delete" @click="deleteTask" />
   </div>
 </template>
 <script>
@@ -39,17 +37,17 @@ export default {
 };
 </script>
 <style scoped>
-.wrapper {
+.task-card {
+  min-height: 0;
   border: 1px solid #d9d9d9;
   border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 10px;
-  margin-bottom: 1rem;
   display: grid;
   grid-template-columns: auto 1fr repeat(2, auto);
   gap: 1rem;
   align-items: center;
-  min-height: 75px;
+  height: 75px;
   .info {
     display: flex;
     flex-direction: column;

@@ -13,7 +13,10 @@ Vue.prototype.$http = axios;
 const handleErrors = {
   install(Vue) {
     Vue.prototype.$handleErrors = function (error) {
-      if (error.response.data) {
+      if (
+        Object.hasOwn(error, "response") &&
+        Object.hasOwn(error.response, "data")
+      ) {
         Object.keys(error.response.data).forEach((key) => {
           if (typeof error.response.data[key] === "string") {
             this.$message.error(`${key}: ${error.response.data[key]}`);
